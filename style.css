@@ -1,0 +1,157 @@
+
+@font-face {
+  font-family: "font"; /* Имя, которое вы будете использовать в CSS */
+  src: url("Lato-Bold.ttf") format("ttf"), /*  Первый предпочтительный формат, затем запасные */
+  font-weight: normal; /*  Например, normal, bold, etc. */
+  font-style: normal;  /*  Например, normal, italic, etc. */
+}
+
+* {
+        font-family: "font", sans-serif; /* Замените "Arial" на желаемый системный шрифт */
+      }
+
+
+html {
+	height: 100vh;
+}
+body {
+	display: flex;
+	margin: 0;
+	height: 100vh;
+	flex-direction: column;
+	text-align: center;
+	background-color: #3ba0ed;
+	}
+h1 {
+	margin: 2vw 2vw;
+	font-size: 2em;
+	color: white;
+}
+
+.map {
+	width: 100%;
+}
+.map-img {
+	width: 100%;
+}
+.interactive-block {
+	display: flex;
+	height: 52vh;
+	width: 100%;
+	flex-direction: column;
+	text-align: center;
+	border-bottom: 1px solid white;
+}
+.bus {
+	margin-top: 5vw;
+}
+.nearestBus {
+	margin: 4vw 5vw;
+	background-color: transparent;
+	font-size: 1.5em;
+	font-weight: bold;
+    color: white;
+    border-color: white;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+.navigation-menu {
+	display: flex;
+	justify-content: space-between;
+	height: 60px;
+	margin: 3px 0;
+}
+.navigation-menu-near_stop {
+	margin: 0 10px;
+	height: 60px;
+	padding: 0;
+	width: 60px;
+	height: 60px;
+}
+.navigation-menu-near_stop-icon{
+	width: 60px;
+	height: 60px;
+}
+.navigation-menu-route {
+	margin: 0;
+	height: 60px;
+	padding: 0;
+	width: 60px;
+	height: 60px;
+}
+.navigation-menu-route-icon {
+	width: 60px;
+	height: 60px;
+}
+.navigation-menu-scedule {
+	margin: 0 10px;
+	height: 60px;
+	padding: 0;
+	width: 60px;
+	height: 60px;
+}
+.navigation-menu-scedule-icon {
+	width: 60px;
+	height: 60px;
+}
+
+.stop-bus-name {
+	font-size: 1.5em;
+	font-weight: bold;
+	color: #3ba0ed;
+	margin-top: 7vw;
+	margin-bottom: 7vw;
+}
+.block-scedule-bus {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: 4vw 5vw;
+	
+}
+.num-bus-block-red {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #ed815c;
+	width: 50px;
+	padding: 5px 7px;
+	border-radius: 20px;
+}
+
+.num-bus-block-green {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #18c20c;
+	width: 50px;
+	padding: 5px 7px;
+	border-radius: 20px;
+}
+.num-bus-img {
+	margin-left: 5px;
+	height: 20px;
+	width: 20px;
+	background-image: url("bus-icon_609277-1518-removebg-preview (1).png");
+	background-repeat: no-repeat; /* Запрещаем повторение */
+  	background-size: cover; /* Растягиваем изображение на весь элемент */
+  	background-position: center; /* Центрируем изображение */
+  	
+}
+.num-bus {
+	padding-left: 5px;
+	color: white;
+	font-size: 1em;
+}
+
+.line {
+	justify-self: center;
+	background-color: grey;
+	height: 1px;
+	width: 90vw;
+}
+.block-scedule-buses {
+	display: grid;
+
+}
