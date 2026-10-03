@@ -17,7 +17,7 @@ html {
 body {
 	display: flex;
 	margin: 0;
-	height: 100vh;
+	height: 96vh;
 	flex-direction: column;
 	text-align: center;
 	background-color: #3ba0ed;
