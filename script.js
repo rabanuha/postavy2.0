@@ -1,3 +1,36 @@
+// 1. Инициализируем карту в нашем блоке. Отключаем кнопки + и -, чтобы не портили мобильный дизайн.
+// [55.115, 26.837] — это точные географические координаты центра Постав.
+const map = L.map(document.querySelector('.js-offline-map'), {
+    zoomControl: false 
+}).setView([55.115, 26.837], 14); // 14 — стартовый масштаб города
+
+// 2. Указываем путь к вашей папке postavy-map на GitHub
+L.tileLayer('postavy-map/{z}/{x}/{y}.png', {
+    maxZoom: 18,   // Максимальный зум, который вы выгрузили
+    minZoom: 12,   // Минимальный зум
+    tms: true,     // КРИТИЧЕСКИ ВАЖНО: включаем режим TMS, чтобы картинки Постав не перевернулись вверх ногами!
+    attribution: 'Офлайн Карта Поставы'
+}).addTo(map);
+
+// 3. Создаем контейнер для маркеров (чтобы легко стирать старые остановки и ставить новые)
+const markersLayer = L.layerGroup().addTo(map);
+
+// 4. Готовая функция, которая ставит маркер остановки и плавно двигает карту к ней
+function moveMapToStop(stopLat, stopLng, stopName) {
+    markersLayer.clearLayers(); // Стираем прошлую точку, чтобы не засорять экран
+
+    // Ставим красивый маркер на новые координаты
+    const marker = L.marker([stopLat, stopLng]).addTo(markersLayer);
+    
+    // Привязываем всплывающее облачко с названием остановки
+    marker.bindPopup(`<b>${stopName}</b>`).openPopup();
+
+    // Плавно перемещаем карту на эту остановку
+    map.panTo([stopLat, stopLng]);
+}
+
+
+
 const currentTime = new Date();
 let currentHour = currentTime.getHours();
 let currentMinute = currentTime.getMinutes();
