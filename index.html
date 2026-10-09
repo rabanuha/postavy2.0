@@ -13,41 +13,73 @@
 </head>
  
 <body>
-	
- <h1>bus postavy</h1>
-
-  <!-- Добавляем контейнер для рекламы Яндекса -->
+    <h1>bus postavy</h1>
     <div class="top-banner-spacer"></div>
 
-    <div class="map-wrapper">
-    	<div class="map js-offline-map"></div> <!-- Это пустой блок, куда Leaflet вставит карту -->
-	</div>
+    <!-- === ЭКРАН 1: ГЛАВНЫЙ С КАРТОЙ И АВТОБУСОМ === -->
+    <div class="app-page js-page-main active-page">
+        <div class="map-wrapper">
+            <div class="map js-offline-map"></div>
+        </div>
 
+        <div class="interactive-block">
+            <img class="bus" src="lunch-removebg-preview.png" alt="автобус">
+            <button class="nearestBus">Поиск</button>
+        </div>
+    </div>
 
- <div class="interactive-block">
- 	<img class="bus" src="lunch-removebg-preview.png" alt="автобус">
- 	<button class="nearestBus">Поиск</button>
- </div>
+    <!-- === ЭКРАН 2: МАРШРУТЫ (ЗАГЛУШКА) === -->
+    <div class="app-page js-page-route">
+        <div class="dev-container">
+            <div class="dev-icon">⚙️</div>
+            <h2>Раздел в разработке</h2>
+            <p>Следите за обновлениями программы!</p>
+        </div>
+    </div>
 
- 
- <div class="navigation-menu">
-	<div class="navigation-menu-near_stop">
-		<img class="navigation-menu-near_stop-icon" src="bus-stop-shelter-isometric-vector_87187-51.avif" alt="Автобусная остановка в изометрии">
-	</div>
+    <!-- === ЭКРАН 3: РАСПИСАНИЕ (ЗАГЛУШКА) === -->
+    <div class="app-page js-page-schedule">
+        <div class="dev-container">
+            <div class="dev-icon">📅</div>
+            <h2>Раздел в разработке</h2>
+            <p>Следите за обновлениями программы!</p>
+        </div>
+    </div>
 
-	<div class="navigation-menu-route">
-		<img class="navigation-menu-route-icon" src="qwen-image-2.1-1600290153.png" alt="иконка">
-	</div>
+    <!-- === ЭКРАН 4: ИНФОРМАЦИЯ (О ПРОГРАММЕ И ОТКАЗ ОТ ОТВЕТСТВЕННОСТИ) === -->
+    <div class="app-page js-page-info">
+        <div class="info-container">
+            <h2>Автобусы Поставы</h2>
+            <div class="info-version">Версия программы: 2.0.0</div>
+            
+            <div class="info-card">
+                <p>Программа находится в стадии активной разработки и тестирования.</p>
+                <p class="disclaimer">
+                    <b>Внимание:</b> Данное расписание взято из открытых публичных источников. 
+                    Разработчик не несет ответственности за возможные неточности в графике движения 
+                    транспорта или задержки рейсов.
+                </p>
+            </div>
+        </div>
+    </div>
 
-	<div class="navigation-menu-scedule">
-		<img class="navigation-menu-scedule-icon" src="qwen-image-2.1-1116880962.png" alt="иконка">
-	</div>
+    <!-- === ВАШЕ НИЖНЕЕ МЕНЮ ВКЛАДОК === -->
+    <div class="navigation-menu">
+        <div class="navigation-menu-near_stop" onclick="switchPage('main')">
+            <img class="navigation-menu-near_stop-icon" src="bus-stop-shelter-isometric-vector_87187-51.avif" alt="Автобусная остановка">
+        </div>
+        <div class="navigation-menu-route" onclick="switchPage('route')">
+            <img class="navigation-menu-route-icon" src="qwen-image-2.1-1600290153.png" alt="иконка">
+        </div>
+        <div class="navigation-menu-scedule" onclick="switchPage('schedule')">
+            <img class="navigation-menu-scedule-icon" src="qwen-image-2.1-1116880962.png" alt="иконка">
+        </div>
+        <div class="navigation-menu-information" onclick="switchPage('info')">
+            <img class="navigation-menu-information-icon" src="i.png" alt="иконка">
+        </div>
+    </div>
 
-	 <div class="navigation-menu-information">
-		<img class="navigation-menu-information-icon" src="i.png" alt="иконка">
-	</div>
-	 
- </div>
- <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
