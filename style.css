@@ -11,37 +11,67 @@
 
 
 html {
-	height: 100vh;
+    height: 100%; /* Меняем 100vh на жесткие 100% */
+    margin: 0;
+    padding: 0;
 }
 body {
-	display: flex;
-	margin: 0;
-	height: 90vh;
-	flex-direction: column;
-	text-align: center;
-	background-color: #3ba0ed;
-	padding-top: 27px
-	}
+    display: flex;
+    flex-direction: column; /* Элементы выстраиваются строго друг за другом сверху вниз */
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #3ba0ed;
+    text-align: center;
+    box-sizing: border-box;
+	padding-top: 27px;
+}
 h1 {
-	margin: 2vw 2vw;
-	font-size: 2em;
-	color: white;
+    margin: 10px 0 5px 0; /* Компактные отступы для заголовка */
+    font-size: 2em;
+    color: white;
+    flex-shrink: 0; /* Запрещаем заголовку сжиматься */
+}
+/* Плашка под рекламу Яндекса */
+.top-banner-spacer {
+    width: 100%;
+    height: 50px; /* Фиксированная высота под нативный баннер */
+    background: #ffffff;
+    flex-shrink: 0; /* Запрещаем рекламе сжиматься */
+}
+
+/* Контейнер-Резина: занимает ВСЁ свободное пространство между верхом и низом */
+.map-wrapper {
+    flex-grow: 1; 
+    width: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .map {
-	width: 100%;
+    width: 100%;
+    height: 100%;
 }
+
 .map-img {
-	width: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Карта аккуратно заполняет весь свой блок без искажения */
 }
+
+
 .interactive-block {
-	display: flex;
-	height: 52vh;
-	width: 100%;
-	flex-direction: column;
-	text-align: center;
-	border-bottom: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 220px; /* Задаем четкую фиксированную высоту вместо 52vh */
+    background-color: #3ba0ed;
+    border-bottom: 1px solid white;
+    flex-shrink: 0; /* Нижний блок никогда не сожмется */
 }
+
 .bus {
 	margin-top: 5vw;
 }
@@ -57,10 +87,15 @@ h1 {
 }
 
 .navigation-menu {
-	display: flex;
-	justify-content: space-between;
-	height: 60px;
-	margin: 3px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 70px; /* Четкая высота для таб-бара */
+    margin: 0;
+    padding: 5px 0;
+    background-color: #3ba0ed;
+    flex-shrink: 0; /* Меню всегда остается на месте */
 }
 .navigation-menu-near_stop {
 	margin: 0 10px;
