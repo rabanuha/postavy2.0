@@ -66,24 +66,27 @@ h1 {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 220px; /* Задаем четкую фиксированную высоту вместо 52vh */
+    height: 230px; /* Задаем четкую фиксированную высоту вместо 52vh */
     background-color: #3ba0ed;
     border-bottom: 1px solid white;
     flex-shrink: 0; /* Нижний блок никогда не сожмется */
+	box-sizing: border-box;
 }
 
 .bus {
-	margin-top: 5vw;
+	height: 140px; /* Ограничиваем высоту автобуса, чтобы он не раздувался */
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 10px;
 }
 .nearestBus {
-	margin: 4vw 5vw;
-	background-color: transparent;
-	font-size: 1.5em;
-	font-weight: bold;
+	background: none;
+    border: none;
     color: white;
-    border-color: white;
-    border-radius: 30px;
+    font-size: 1.5em;
+    font-weight: bold;
     cursor: pointer;
+    padding: 5px 10px;
 }
 
 .navigation-menu {
