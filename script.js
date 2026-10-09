@@ -284,3 +284,23 @@ blockSceduleBus.appendChild(timeBus);
 if (nearestBus) {
 nearestBus.addEventListener('click', handleClick);
 }
+function switchPage(pageName) {
+    // 1. Находим все страницы на сайте
+    const pages = document.querySelectorAll('.app-page');
+    
+    // 2. Стираем класс активности у абсолютно всех страниц
+    pages.forEach(page => {
+        page.classList.remove('active-page');
+    });
+
+    // 3. Включаем нужную страницу по её классу
+    if (pageName === 'main') {
+        document.querySelector('.js-page-main').classList.add('active-page');
+    } else if (pageName === 'route') {
+        document.querySelector('.js-page-route').classList.add('active-page');
+    } else if (pageName === 'schedule') {
+        document.querySelector('.js-page-schedule').classList.add('active-page');
+    } else if (pageName === 'info') {
+        document.querySelector('.js-page-info').classList.add('active-page');
+    }
+}
