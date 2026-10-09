@@ -1,7 +1,8 @@
 // 1. Инициализируем карту в нашем блоке. Отключаем кнопки + и -, чтобы не портили мобильный дизайн.
 // [55.115, 26.837] — это точные географические координаты центра Постав.
 const map = L.map(document.querySelector('.js-offline-map'), {
-    zoomControl: false 
+    zoomControl: false,
+    attributionControl: false
 }).setView([55.115, 26.837], 14); // 14 — стартовый масштаб города
 
 // 2. Указываем путь к вашей папке postavy-map на GitHub
