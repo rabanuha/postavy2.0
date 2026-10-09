@@ -1,4 +1,3 @@
-
 @font-face {
   font-family: "font"; /* Имя, которое вы будете использовать в CSS */
   src: url("Lato-Bold.ttf") format("ttf"), /*  Первый предпочтительный формат, затем запасные */
