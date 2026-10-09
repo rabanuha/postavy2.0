@@ -5,21 +5,21 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
 	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://unpkg.com" />
+	<script src="https://unpkg.com"></script>
 </head>
  
-
 <body>
+	
  <h1>bus postavy</h1>
 
   <!-- Добавляем контейнер для рекламы Яндекса -->
     <div class="top-banner-spacer"></div>
 
-    <!-- Заворачиваем карту в блок, который займет все свободное место -->
     <div class="map-wrapper">
-        <div class="map">
-            <img class="map-img" src="map.png" alt="">
-        </div>
-    </div>
+    	<div class="map js-offline-map"></div> <!-- Это пустой блок, куда Leaflet вставит карту -->
+	</div>
+
 
  <div class="interactive-block">
  	<img class="bus" src="lunch-removebg-preview.png" alt="автобус">
