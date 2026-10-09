@@ -203,3 +203,56 @@ h1 {
 	display: grid;
 
 }
+/* Логика отображения страниц */
+.app-page {
+    display: none; /* Все страницы по умолчанию скрыты */
+    width: 100%;
+    flex-grow: 1; /* Страница занимает все место от рекламы до меню */
+}
+
+.app-page.active-page {
+    display: flex; /* Показываем только активную страницу */
+    flex-direction: column;
+}
+
+/* Стили для экранов разработки (2 и 3 кнопки) */
+.dev-container {
+    color: white;
+    margin: auto;
+    padding: 20px;
+}
+.dev-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+/* Стили для экрана Информация (4 кнопка) */
+.info-container {
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.info-version {
+    font-size: 1.1rem;
+    opacity: 0.8;
+    margin-bottom: 25px;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.15); /* Прозрачно-белая аккуратная подложка */
+    padding: 20px;
+    border-radius: 15px;
+    text-align: left;
+    line-height: 1.5;
+    font-size: 1.1rem;
+}
+
+.disclaimer {
+    margin-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding-top: 15px;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
