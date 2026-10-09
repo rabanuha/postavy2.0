@@ -66,7 +66,7 @@ h1 {
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 230px; /* Задаем четкую фиксированную высоту вместо 52vh */
+    height: 330px; /* Задаем четкую фиксированную высоту вместо 52vh */
     background-color: #3ba0ed;
     border-bottom: 1px solid white;
     flex-shrink: 0; /* Нижний блок никогда не сожмется */
