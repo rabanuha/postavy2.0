@@ -23,9 +23,23 @@
         </div>
 
         <div class="interactive-block">
-            <img class="bus" src="lunch-removebg-preview.png" alt="автобус">
-            <button class="nearestBus">Поиск</button>
-        </div>
+    <!-- Ваш мультяшный автобус и кнопка "Где автобус?", как у вас и было -->
+    <!-- Обернули автобус в коробку-контейнер -->
+    <div class="bus-container" id="bus-box">
+        <img class="bus" src="lunch-removebg-preview.png" alt="автобус">
+    </div>
+    <button class="nearestBus">Где автобус?</button>
+
+    <!-- НОВЫЙ БЛОК: Выезжающее меню выбора остановок (изначально спрятано) -->
+    <div class="bottom-sheet-menu" id="bottom-sheet">
+        <!-- Маленькая серая полосочка-индикатор шторки для красоты -->
+        <div class="drag-handle"></div>
+        
+        <!-- Контейнер, куда JavaScript сам вставит нужные кнопки из массива остановок -->
+        <div class="directions-list" id="directions-container"></div>
+    </div>
+</div>
+
     </div>
 
     <!-- === ЭКРАН 2: МАРШРУТЫ (ЗАГЛУШКА) === -->
@@ -79,6 +93,10 @@
         </div>
     </div>
 
+     <!-- 2. Новый файл: база данных и вся магия с картой/маршрутами -->
+    <script src="map-data.js"></script>
+
+    <!-- 3. Главный скрипт: анимации, кнопки, клики и вибрация -->
     <script src="script.js"></script>
 </body>
 
