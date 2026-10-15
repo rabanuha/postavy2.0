@@ -71,23 +71,32 @@ h1 {
     border-bottom: 1px solid white;
     flex-shrink: 0; /* Нижний блок никогда не сожмется */
 	box-sizing: border-box;
+    position: relative;
+    overflow: hidden; /* Намертво прячет шторку, пока она не активирована */
 }
 
 .bus {
-	height: 140px; /* Ограничиваем высоту автобуса, чтобы он не раздувался */
+    height: 120px;
     width: auto;
     object-fit: contain;
-    margin-bottom: 10px;
 }
+
+/* Дизайн кнопки "Где автобус?" в виде белой капсулы */
 .nearestBus {
-	background: none;
+    width: 170px;            /* Сделали компактной, строго под размер автобуса! */
+    height: 50px;            
+    background-color: white; 
+    color: #3ba0ed;          
     border: none;
-    color: white;
-    font-size: 1.5em;
-    font-weight: bold;
-    cursor: pointer;
-    padding: 5px 10px;
+    border-radius: 25px;     
+    font-size: 1.15rem;       /* Слегка уменьшили шрифт, чтобы текст "Где автобус?" идеально влез в капсулу */
+    font-weight: bold;       
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
+    margin-top: 10px;
+    z-index: 1; /* Слой 1: самый нижний, шторка накроет её при выезде */
 }
+
+
 
 .navigation-menu {
     display: flex;
@@ -99,6 +108,8 @@ h1 {
     padding: 5px 0;
     background-color: #3ba0ed;
     flex-shrink: 0; /* Меню всегда остается на месте */
+    position: relative; /* Обязательно для работы z-index */
+    z-index: 3; /* Слой 3: Самый верхний! Шторка будет выезжать ИЗ-ПОД него */
 }
 .navigation-menu-near_stop {
 	margin: 0 10px;
@@ -255,4 +266,103 @@ h1 {
     padding-top: 15px;
     font-size: 0.95rem;
     opacity: 0.9;
+}
+
+.bottom-sheet-menu {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 155px; /* Высота кнопок выбора */
+    background-color: #3ba0ed;
+    
+    /* Сдвигаем её вниз С УЧЕТОМ высоты меню вкладок, чтобы она полностью спряталась */
+    transform: translateY(250px); 
+    transition: transform 0.4s ease-out; /* Плавный выезд */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 6px 20px 20px 20px; 
+    
+    /* Слой 2: шторка выше кнопки, но ниже нижнего меню! */
+    z-index: 2; 
+}
+
+
+
+/* Когда шторка открывается, она поднимается ровно над меню вкладок, упираясь в колеса */
+.bottom-sheet-menu.open {
+    transform: translateY(0);
+}
+
+/* Маленькая серая полосочка-индикатор сверху шторки */
+.drag-handle {
+    width: 40px;
+    height: 5px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    margin-bottom: 8px;
+}
+
+/* Контейнер для списка кнопок-направлений */
+.directions-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Расстояние между кнопками, чтобы папа не промахнулся */
+}
+
+/* Массивные кнопки выбора направления (как мы и перемололи — из вашего массива) */
+.direction-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 55px; /* Пухлая кнопка под палец */
+    background-color: white;
+    color: #333333;
+    border: none;
+    border-radius: 15px; /* Аккуратное скругление */
+    font-size: 1.15rem;
+    font-weight: bold;
+    padding: 0 15px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Иконка автобусного павильона внутри кнопки */
+.direction-btn-icon {
+    font-size: 1.4rem;
+    margin-right: 12px;
+}
+
+/* 1. Эффект "Автобус завёлся" (быстрые мультяшные микро-сдвиги) */
+@keyframes shakeBus {
+    0% { transform: translate(0, 0); }
+    20% { transform: translate(-1px, 1px); }
+    40% { transform: translate(1px, -1px); }
+    60% { transform: translate(-1px, -1px); }
+    80% { transform: translate(1px, 1px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* Этот класс мы повесим на автобус с помощью JS при клике */
+.bus.vibrate {
+    animation: shakeBus 0.06s infinite; /* Трясётся без остановки на холостых */
+}
+
+
+/* Коробка автобуса: отвечает за перемещение по экрану */
+.bus-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    transition: transform 0.6s ease-in; /* Плавный уезд коробки */
+    margin-bottom: 25px; /* Наш прошлый отступ от полоски шторки */
+}
+
+/* Класс уезда вешаем ТЕПЕРЬ НА КОНТЕЙНЕР */
+.bus-container.drive-away {
+    transform: translateX(-150%);
 }
