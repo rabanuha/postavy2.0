@@ -1,41 +1,4 @@
 // ==========================================
-// 1. БАЗА ДАННЫХ ОСТАНОВОК ПОСТАВ (ЗАГЛУШКА)
-// ==========================================
-// Сюда вы потом по аналогии добавите все остальные точки города.
-const stopsDatabase = {
-    "Поставский лесхоз": {
-        "в Центр": {
-            lat: 55.1135, // Координаты павильона на стороне "в Центр"
-            lng: 26.8320,
-            times: ["07:15", "08:40", "12:10", "23:35"]
-        },
-        "из Центра": {
-            lat: 55.1145, // Координаты павильона на противоположной стороне "из Центра"
-            lng: 26.8335,
-            times: ["07:50", "09:20", "13:40", "23:15"]
-        }
-    },
-    "Улица Красноармейская": {
-        "в Центр": {
-            lat: 55.1170,
-            lng: 26.8410,
-            times: ["07:22", "08:50", "12:18", "17:44"]
-        },
-        "из Центра": {
-            lat: 55.1175,
-            lng: 26.8425,
-            times: ["08:00", "09:30", "13:50", "18:25"]
-        }
-    }
-};
-
-// Текущие координаты человека по умолчанию (как будто папа стоит недалеко от Лесхоза)
-let userLocation = {
-    lat: 55.1125,
-    lng: 26.8310
-};
-
-// ==========================================
 // 2. ИНИЦИАЛИЗАЦИЯ ОФЛАЙН-КАРТЫ LEAFLET
 // ==========================================
 const map = L.map(document.querySelector('.js-offline-map'), {
@@ -82,14 +45,23 @@ function showAllOptionsOnMap(stopName) {
     const points = [[userLocation.lat, userLocation.lng]];
 
     // 2. Ставим маркеры для всех доступных направлений этой остановки
-    Object.keys(stopData).forEach(direction => {
-        const dirInfo = stopData[direction];
-        points.push([dirInfo.lat, dirInfo.lng]);
+Object.keys(stopData).forEach(direction => {
+    const dirInfo = stopData[direction];
+    points.push([dirInfo.lat, dirInfo.lng]);
 
-        L.marker([dirInfo.lat, dirInfo.lng])
-            .addTo(stopsLayer)
-            .bindPopup(`<b>${stopName}</b><br>Направление: ${direction}`);
-    });
+    // ИСПРАВЛЕНО: Рисуем красивый векторный оранжевый кружок вместо картинки!
+    L.circleMarker([dirInfo.lat, dirInfo.lng], {
+        radius: 10,             // Размер кружка
+        color: '#ffffff',       // Белая аккуратная обводка
+        weight: 2,
+        fillColor: '#f39c12',   // Сочный оранжевый цвет остановки
+        fillOpacity: 1
+    })
+    .addTo(stopsLayer)
+    .bindPopup(`<b>${dirInfo.displayName}</b><br>Направление: ${direction}`);
+});
+
+
 
     // Автоматически настраиваем камеру карты, чтобы ВСЕ точки красиво влезли в экран
     map.fitBounds(points, { padding: [40, 40] });
@@ -106,11 +78,18 @@ function selectDirectionAndBuildRoute(stopName, direction) {
     const currentStop = stopsDatabase[stopName][direction];
     if (!currentStop) return;
 
-    // 1. Ставим финальный маркер выбранной остановки
-    L.marker([currentStop.lat, currentStop.lng])
-        .addTo(stopsLayer)
-        .bindPopup(`<b>${stopName}</b><br>(${direction})`)
-        .openPopup();
+    // 1. Ставим финальный маркер выбранной остановки (векторный красный кружок)
+L.circleMarker([currentStop.lat, currentStop.lng], {
+    radius: 10,
+    color: '#ffffff',
+    weight: 2,
+    fillColor: '#ff4747',   // Красный цвет выбранной точки
+    fillOpacity: 1
+})
+.addTo(stopsLayer)
+    .bindPopup(`<b>${currentStop.displayName}</b><br>(${direction})`)
+    .openPopup();
+
 
     // 2. Строим КРАСНУЮ ПУНКТИРНУЮ ЛИНИЮ маршрута от человека до остановки
     const startPoint = [userLocation.lat, userLocation.lng];
@@ -127,9 +106,57 @@ function selectDirectionAndBuildRoute(stopName, direction) {
     map.fitBounds([startPoint, endPoint], { padding: [50, 50] });
 
     // Возвращаем массив времён для этой конкретной стороны, чтобы вывести его в расписание
-    return currentStop.times;
+    return stopsDatabase[stopName][direction].routes;
 }
 
+
+// ==========================================
+// 1. БАЗА ДАННЫХ ОСТАНОВОК ПОСТАВ (ЗАГЛУШКА)
+// ==========================================
+// Сюда вы потом по аналогии добавите все остальные точки города.
+// =================================================================
+// ОБЪЕДИНЕННАЯ БАЗА ОСТАНОВОК ПОСТАВ С МАРШРУТАМИ И НАПРАВЛЕНИЯМИ
+// =================================================================
+const stopsDatabase = {
+    // Объединяем две противоположные остановки под одним общим ключом
+    "ПТУ / Льнозавод": {
+        "в сторону Площади": {
+            // Координаты павильона ПТУ
+            lat: 55.1175, 
+            lng: 26.8250,
+            // Имя для вывода на плашку расписания
+            displayName: "ПТУ", 
+            // Полный массив ваших родных автобусов со второго скриншота:
+            routes: [
+                { numberBus : '1', timeHourMinute : [{ hour: 7, minute: 3 }, { hour: 7, minute: 33 }, { hour: 8, minute: 38 }, { hour: 8, minute: 58 }, { hour: 11, minute: 8 }, { hour: 11, minute: 33 }, { hour: 11, minute: 58 }, { hour: 12, minute: 28 }, { hour: 12, minute: 53 }, { hour: 13, minute: 48 }, { hour: 14, minute: 18 }, { hour: 15, minute: 13 }, { hour: 15, minute: 43 }, { hour: 16, minute: 33 }, { hour: 17, minute: 3 }, { hour: 17, minute: 23 }, { hour: 17, minute: 53 }, { hour: 18, minute: 13 }, { hour: 18, minute: 43 }]}, 
+                { numberBus : '3', timeHourMinute : [{ hour: 6, minute: 33 }, { hour: 7, minute: 23 }, { hour: 8, minute: 13 }, { hour: 8, minute: 48 }, { hour: 9, minute: 13 }, { hour: 9, minute: 43 }, { hour: 10, minute: 8 }, { hour: 10, minute: 28 }, { hour: 11, minute: 48 }, { hour: 12, minute: 43 }, { hour: 13, minute: 3 }, { hour: 13, minute: 30 }, { hour: 13, minute: 58 }, { hour: 14, minute: 28 }, { hour: 14, minute: 48 }, { hour: 15, minute: 22 }, { hour: 16, minute: 43 }, { hour: 17, minute: 13 }, { hour: 17, minute: 33 }, { hour: 18, minute: 3 }, { hour: 18, minute: 23 }]},
+                { numberBus : '3тк', timeHourMinute : [{ hour: 7, minute: 5 }, { hour: 8, minute: 5 }, { hour: 9, minute: 6 }, { hour: 10, minute: 14 }, { hour: 11, minute: 0 }, { hour: 12, minute: 55 }, { hour: 13, minute: 45 }, { hour: 15, minute: 31 }, { hour: 16, minute: 30 }, { hour: 17, minute: 30 }, { hour: 18, minute: 18 }, { hour: 19, minute: 11 }]},
+                { numberBus : '1тк', timeHourMinute : [{ hour: 9, minute: 3 }]}
+            ]
+        },
+        "в сторону Конечной": {
+            // Координаты павильона Льнозавод напротив
+            lat: 55.1181, 
+            lng: 26.8240,
+            displayName: "Льнозавод",
+            // Полный массив автобусов для противоположной стороны:
+            routes: [
+                { numberBus : '1', timeHourMinute : [{ hour: 7, minute: 3 }, { hour: 7, minute: 33 }, { hour: 8, minute: 38 }, { hour: 8, minute: 58 }, { hour: 11, minute: 8 }, { hour: 11, minute: 33 }, { hour: 11, minute: 58 }, { hour: 12, minute: 28 }, { hour: 12, minute: 53 }, { hour: 13, minute: 48 }, { hour: 14, minute: 18 }, { hour: 15, minute: 13 }, { hour: 15, minute: 43 }, { hour: 16, minute: 33 }, { hour: 17, minute: 3 }, { hour: 17, minute: 23 }, { hour: 17, minute: 53 }, { hour: 18, minute: 13 }, { hour: 18, minute: 43 }]}, 
+                { numberBus : '3', timeHourMinute : [{ hour: 6, minute: 33 }, { hour: 7, minute: 23 }, { hour: 8, minute: 13 }, { hour: 8, minute: 48 }, { hour: 9, minute: 13 }, { hour: 9, minute: 43 }, { hour: 10, minute: 8 }, { hour: 10, minute: 28 }, { hour: 11, minute: 48 }, { hour: 12, minute: 43 }, { hour: 13, minute: 3 }, { hour: 13, minute: 30 }, { hour: 13, minute: 58 }, { hour: 14, minute: 28 }, { hour: 14, minute: 48 }, { hour: 15, minute: 22 }, { hour: 16, minute: 43 }, { hour: 17, minute: 13 }, { hour: 17, minute: 33 }, { hour: 18, minute: 3 }, { hour: 18, minute: 23 }]},
+                { numberBus : '3тк', timeHourMinute : [{ hour: 7, minute: 5 }, { hour: 8, minute: 5 }, { hour: 9, minute: 6 }, { hour: 10, minute: 14 }, { hour: 11, minute: 0 }, { hour: 12, minute: 55 }, { hour: 13, minute: 45 }, { hour: 15, minute: 31 }, { hour: 16, minute: 30 }, { hour: 17, minute: 30 }, { hour: 18, minute: 18 }, { hour: 19, minute: 11 }]},
+                { numberBus : '1тк', timeHourMinute : [{ hour: 7, minute: 3 }, { hour: 7, minute: 5 }, { hour: 8, minute: 5 }, { hour: 9, minute: 6 }, { hour: 10, minute: 14 }, { hour: 11, minute: 0 }, { hour: 12, minute: 55 }, { hour: 13, minute: 45 }, { hour: 15, minute: 31 }, { hour: 16, minute: 30 }, { hour: 17, minute: 30 }, { hour: 18, minute: 18 }, { hour: 19, minute: 11 }]}
+            ]
+        }
+    }
+    // Следующие парные остановки города вы будете дописывать сюда по такому же шаблону
+};
+
+
+// Текущие координаты человека по умолчанию (как будто папа стоит недалеко от Лесхоза)
+let userLocation = {
+    lat: 55.1125,
+    lng: 26.8310
+};
 
 
 // const busStop = [

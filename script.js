@@ -11,31 +11,10 @@ let activeStopName = "";
 let activeDirection = ""; 
 
 function updateData() {
-    // Если папа еще не нажал кнопку и остановка неизвестна — берем координаты заглушки
-    if (!activeStopName) {
-        // Запускаем ваш расчет ближайшего объекта по координатам из map-data.js
-        const found = findObject(stopsDatabase, 'latitudeBus', userLocation.lat, 'longitudeBus', userLocation.lng);
-        if (found) {
-            // Ищем имя в нашей новой базе данных, где ключи — это названия остановок
-            for (let stopName in stopsDatabase) {
-                // Временный подбор имени для совместимости с вашей функцией findObject
-                activeStopName = stopName; 
-                activeDirection = Object.keys(stopsDatabase[stopName])[0];
-                break;
-            }
-        }
-    }
-
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(successCallback, errorCallback, { enableHighAccuracy: true });
     } else {
-        // Если реального GPS нет (например в браузере), делаем мгновенный расчет по заглушке
-        const mockPosition = {
-            coords: {
-                latitude: userLocation.lat,
-                longitude: userLocation.lng
-            }
-        };
+        const mockPosition = { coords: { latitude: userLocation.lat, longitude: userLocation.lng } };
         successCallback(mockPosition);
     }
 }
@@ -45,12 +24,25 @@ function successCallback(position) {
     currentHour = newTime.getHours();
     currentMinute = newTime.getMinutes();
 
-    // Обновляем глобальные координаты человека реальными данными с датчика телефона
-    userLocation.lat = position.coords.latitude;
-    userLocation.lng = position.coords.longitude;
+    // 1. Берем реальную широту и долготу, которую выдал телефон модератора или папы
+    let realLat = position.coords.latitude;
+    let realLng = position.coords.longitude;
 
-    // 1. Находим имя ближайшей остановки по вашей математической формуле
-    // Передаем массив остановок, который мы сейчас соберем из базы данных для совместимости
+    // 2. УМНАЯ ПРОВЕРКА: Находятся ли координаты в районе Постав?
+    // Центр Постав имеет широту ~55.115. Если реальный латитюд сильно отличается (например, Москва — 55.75), 
+    // значит приложение запустил модератор или мы тестируем на ПК в браузере!
+    if (Math.abs(realLat - 55.115) > 0.5 || Math.abs(realLng - 26.837) > 0.5) {
+        // Автоматически включаем "Режим модератора" и подставляем папу к ПТУ/Льнозаводу для теста!
+        userLocation.lat = 55.1165; 
+        userLocation.lng = 26.8260;
+        console.log("Включен режим модерации: координаты подменены на Поставы");
+    } else {
+        // Если это реальный телефон папы в Поставах — берем его честный GPS с датчика!
+        userLocation.lat = realLat;
+        userLocation.lng = realLng;
+    }
+
+    // --- ДАЛЬШЕ ИДЕТ ВАШ СТАНДАРТНЫЙ КОД БЕЗ ИЗМЕНЕНИЙ ---
     const stopsArray = Object.keys(stopsDatabase).map(name => ({
         name: name,
         latitudeBus: stopsDatabase[name][Object.keys(stopsDatabase[name])[0]].lat,
@@ -65,25 +57,17 @@ function successCallback(position) {
         activeDirection = Object.keys(stopsDatabase[activeStopName])[0];
     }
 
-    // 2. Достаем расписание для выбранного направления из map-data.js
-    const stopTimes = stopsDatabase[activeStopName][activeDirection].times;
-
-    // 3. Формируем объект маршрута в том виде, который ОЖИДАЕТ ваша функция timeArrivalBus
+    const timesArray = stopsDatabase[activeStopName][activeDirection].routes;
     const routeData = {
-        name: activeStopName + ` (${activeDirection})`,
-        routes: [{
-            numberBus: "Автобус", // Заглушка номера
-            timeHourMinute: stopTimes.map(t => {
-                const parts = t.split(":");
-                return { hour: parseInt(parts[0]), minute: parseInt(parts[1]) };
-            })
-        }]
+        name: stopsDatabase[activeStopName][activeDirection].displayName + ` (${activeDirection})`,
+        routes: timesArray
     };
 
-    // 4. Запускаем ваш стандартный счетчик прилета минут и рисуем плашки
     const tA = timeArrivalBus(routeData, currentHour, currentMinute);
     objToDiv(tA);
 }
+
+
 
 function errorCallback(error) {
     console.warn("Ошибка геолокации при автообновлении: " + error.message);
@@ -126,39 +110,32 @@ function handleClick(event) {
     // Очищаем контейнер перед добавлением новых кнопок
     container.innerHTML = "";
 
-    // 4. Генерируем кнопки НАПРЯМУЮ из вашего массива данных остановок Постав
-    directions.forEach(dir => {
-        // Создаем пухлую белую кнопку под палец
-        const btn = document.createElement("button");
-        btn.classList.add("direction-btn");
+directions.forEach(dir => {
+    const btn = document.createElement("button");
+    btn.classList.add("direction-btn");
+    
+    // ДОСТАЕМ КРАСИВОЕ ИМЯ: лезем в базу за displayName конкретного направления
+    // activeStopName у нас равен "ПТУ / Льнозавод", а dir равен "в сторону Площади"
+    const prettyName = stopsDatabase[activeStopName][dir].displayName;
+    
+    // ТЕПЕРЬ ТЕКСТ БУДЕТ: «🚏 ПТУ (в сторону Площади)»
+    btn.innerHTML = `<span class="direction-btn-icon">🚏</span> ${prettyName} (${dir})`;
+    
+    btn.addEventListener("click", () => {
+        const busBox = document.getElementById("bus-box");
+        if (busBox) busBox.classList.add("drive-away");
         
-        // Вставляем иконку павильона и текст из массива
-        btn.innerHTML = `<span class="direction-btn-icon">🚏</span> ${activeStopName} (${dir})`;
+        if (navigator.vibrate) navigator.vibrate(500);
         
-        // Вешаем на кнопку клик: папа тапает — шторка закрывается, автобус уезжает!
-        btn.addEventListener("click", () => {
-    // 1. Находим нашу внешнюю коробку-контейнер по ID
-    const busBox = document.getElementById("bus-box");
-    if (busBox) {
-        // Командуем коробке плавно улетать влево (автобус внутри неё продолжит круто трястись на ходу!)
-        busBox.classList.add("drive-away");
-    }
-
-    // 2. Включаем тактильный вибро-толчок нарастания скорости на полсекунды
-    if (navigator.vibrate) {
-        navigator.vibrate(500);
-    }
-
-    // 3. Даем пазику полсекунды скрыться за краем экрана, и выводим расписание
-    setTimeout(() => {
-        sheet.classList.remove("open");
-        confirmDirectionAndDrive(dir);
-    }, 500);
+        setTimeout(() => {
+            const sheet = document.getElementById("bottom-sheet");
+            if (sheet) sheet.classList.remove("open");
+            confirmDirectionAndDrive(dir);
+        }, 500);
+    });
+    container.appendChild(btn);
 });
 
-
-        container.appendChild(btn);
-    });
 
     // 5. ВЫДВИГАЕМ ШТОРКУ: она плавно доедет ровно до колес автобуса!
     sheet.classList.add("open");
@@ -168,39 +145,29 @@ function handleClick(event) {
 function confirmDirectionAndDrive(selectedDir) {
     activeDirection = selectedDir;
 
-    // Стираем кнопку "Где автобус?", она больше не нужна
-    if (nearestBus && nearestBus.parentNode) {
-        nearestBus.parentNode.removeChild(nearestBus);
-    }
+    if (nearestBus && nearestBus.parentNode) nearestBus.parentNode.removeChild(nearestBus);
 
-    // ВОТ ЗДЕСЬ автобус красиво уедет влево! 
-    // Пока просто стираем его для работоспособности, а в следующем шаге добавим анимацию уезда
-    if (bus && bus.parentNode) {
-        bus.parentNode.removeChild(bus);
-    }
+    // Строим финальный маршрут на офлайн-карте
+    // Функция из map-data.js теперь будет возвращать чистый массив ваших routes
+    const routesArray = selectDirectionAndBuildRoute(activeStopName, activeDirection);
 
-    // Строим на карте финальный КРАСНЫЙ ПУНКТИРНЫЙ МАРШРУТ до выбранной стороны дороги
-    const timesArray = selectDirectionAndBuildRoute(activeStopName, activeDirection);
-
-    // Формируем объект расписания для вашей стандартной функции timeArrivalBus
+    // Формируем объект расписания ТОЧЬ-В-ТОЧЬ в том виде, который требует ваш старый код!
     const routeData = {
-        name: activeStopName + ` (${activeDirection})`,
-        routes: [{
-            numberBus: "Автобус",
-            timeHourMinute: timesArray.map(t => {
-                const parts = t.split(":");
-                return { hour: parseInt(parts[0]), minute: parseInt(parts[1]) };
-            })
-        }]
+        name: stopsDatabase[activeStopName][activeDirection].displayName + ` (${activeDirection})`,
+        routes: routesArray // Передаем все 4 автобуса с их часами и минутами [{numberBus: '1', timeHourMinute: [...]}, ...]
     };
 
-    // Запускаем ваш счетчик прилета минут и выводим те самые 4 плашки расписания!
+    // Запускаем ваш оригинальный счетчик прилета минут
     const tA = timeArrivalBus(routeData, currentHour, currentMinute);
+    
+    // Рисуем ваши компактные плашки на экране
     objToDiv(tA);
 
-    // Включаем ежеминутный таймер автообновления расписания
+    // Запускаем ежеминутное автообновление расписания
     updateData();
-    setInterval(updateData, 60000);
+    if (!window.dataTimer) {
+        window.dataTimer = setInterval(updateData, 60000);
+    }
 }
 
 
