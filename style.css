@@ -162,13 +162,20 @@ h1 {
 	margin-top: 7vw;
 	margin-bottom: 7vw;
 }
+
 .block-scedule-bus {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin: 4vw 5vw;
-	
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* ИСПРАВЛЕНО: Растягиваем строчку ровно на ширину разделительной линии */
+    width: 90vw; 
+    height: 42px; 
+    
+    /* Сделали компактный отступ только по вертикали, чтобы не рос воздух */
+    margin: 4px 0; 
 }
+
 .num-bus-block-red {
 	display: flex;
 	justify-content: center;
@@ -210,10 +217,21 @@ h1 {
 	height: 1px;
 	width: 90vw;
 }
-.block-scedule-buses {
-	display: grid;
 
+.block-scedule-buses {
+    display: flex;
+    flex-direction: column;
+    
+    /* ДОБАВИЛИ: Намертво центрирует линии и строчки по горизонтали внутри белого блока */
+    align-items: center; 
+    
+    width: 100%;
+    height: 180px; 
+    background-color: white;
+    box-sizing: border-box;
 }
+
+
 /* Логика отображения страниц */
 .app-page {
     display: none; /* Все страницы по умолчанию скрыты */
