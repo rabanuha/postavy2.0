@@ -298,3 +298,33 @@ function switchPage(pageName) {
         document.querySelector('.js-page-info').classList.add('active-page');
     }
 }
+
+// === ЛОГИКА СМАХИВАНИЯ ШТОРКИ ПАЛЬЦЕМ ВНИЗ (SWIPE DOWN) ===
+let touchStartY = 0;
+
+const sheetElement = document.getElementById("bottom-sheet");
+
+if (sheetElement) {
+    // Фиксируем точку, где папа прикоснулся пальцем к шторке
+    sheetElement.addEventListener('touchstart', (e) => {
+        touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    // Проверяем, куда сдвинулся палец при отпускании
+    sheetElement.addEventListener('touchend', (e) => {
+        let touchEndY = e.changedTouches[0].clientY;
+        
+        // Если палец уверенно проскользил сверху вниз больше чем на 60 пикселей
+        if (touchEndY - touchStartY > 60) {
+            // Закрываем шторку
+            sheetElement.classList.remove("open");
+            
+            // ВОЗВРАЩАЕМ КНОПКУ: возвращаем на место кнопку поиска, если папа передумал
+            const mainPage = document.querySelector('.js-page-main');
+            if (mainPage && !document.querySelector('.nearestBus') && !document.querySelector('.block-scedule-buses')) {
+                // Если расписание еще не выведено, просто возвращаем кнопку (можно перезагрузить страницу или вернуть элемент)
+                location.reload(); // Самый простой и надежный способ сбросить анимацию, если папа смахнул шторку назад
+            }
+        }
+    }, { passive: true });
+}
