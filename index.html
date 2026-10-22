@@ -16,19 +16,27 @@
     <h1>bus postavy</h1>
     <div class="top-banner-spacer"></div>
 
-    <!-- === ЭКРАН 1: ГЛАВНЫЙ С КАРТОЙ И АВТОБУСОМ === -->
+        <!-- === ЭКРАН 1: ГЛАВНЫЙ С КАРТОЙ И АВТОБУСОМ === -->
     <div class="app-page js-page-main active-page">
         <div class="map-wrapper">
             <div class="map js-offline-map"></div>
-        </div>
 
-        <div class="interactive-block">
+            <!-- ВСТАВИТЬ СТРОГО СЮДА (Строка 10) -->
+            <div id="bus-modal-overlay" class="bus-modal-overlay">
+                <div class="bus-modal-card">
+                    <div id="bus-modal-num-block" class="bus-modal-top-cube">3</div>
+                    <div id="bus-modal-time-block" class="bus-modal-bottom-info">через 30 мин</div>
+                </div>
+            </div>
+    </div>
+
+    <div class="interactive-block">
     <!-- Ваш мультяшный автобус и кнопка "Где автобус?", как у вас и было -->
     <!-- Обернули автобус в коробку-контейнер -->
-    <div class="bus-container" id="bus-box">
-        <img class="bus" src="lunch-removebg-preview.png" alt="автобус">
-    </div>
-    <button class="nearestBus">Когда автобус?</button>
+        <div class="bus-container" id="bus-box">
+            <img class="bus" src="lunch-removebg-preview.png" alt="автобус">
+        </div>
+        <button class="nearestBus">Когда автобус?</button>
 
     <!-- НОВЫЙ БЛОК: Выезжающее меню выбора остановок (изначально спрятано) -->
     <div class="bottom-sheet-menu" id="bottom-sheet">
@@ -38,26 +46,62 @@
         <!-- Контейнер, куда JavaScript сам вставит нужные кнопки из массива остановок -->
         <div class="directions-list" id="directions-container"></div>
     </div>
+    </div>
+    
 </div>
 
-    </div>
-
-    <!-- === ЭКРАН 2: МАРШРУТЫ (ЗАГЛУШКА) === -->
-    <div class="app-page js-page-route">
-        <div class="dev-container">
-            <div class="dev-icon">⚙️</div>
-            <h2>Раздел в разработке</h2>
-            <p>Следите за обновлениями программы!</p>
+<!-- === ЭКРАН 2: МАРШРУТЫ СО СВОЕЙ КАРТОЙ === -->
+<div class="app-page js-page-route">
+    <!-- Своя, независимая карта Второго экрана -->
+    <div id="route-map" class="route-page-map"></div>
+    
+    <!-- Фиксированный подвал с маршрутами -->
+    <div class="route-list-container">
+        <!-- Маршрут 1 -->
+        <div class="route-list-item active-route" data-route="1">
+            <span class="route-badge-green">1</span>
+            <div class="route-item-info">
+                <div class="route-item-title">Маршрут №1</div>
+                <div class="route-item-dir">ПМЦ — Станкевича</div>
+            </div>
+        </div>
+        
+        <!-- Маршрут 2 -->
+        <div class="route-list-item" data-route="2">
+            <span class="route-badge-blue">2</span>
+            <div class="route-item-info">
+                <div class="route-item-title">Маршрут №2</div>
+                <div class="route-item-dir">МСО — Больница</div>
+            </div>
+        </div>
+        
+        <!-- Маршрут 3 -->
+        <div class="route-list-item" data-route="3">
+            <span class="route-badge-red">3</span>
+            <div class="route-item-info">
+                <div class="route-item-title">Маршрут №3</div>
+                <div class="route-item-dir">Автовокзал — Больница</div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- === ЭКРАН 3: РАСПИСАНИЕ (ЗАГЛУШКА) === -->
     <div class="app-page js-page-schedule">
-        <div class="dev-container">
-            <div class="dev-icon">📅</div>
-            <h2>Раздел в разработке</h2>
-            <p>Следите за обновлениями программы!</p>
-        </div>
+    <!-- Блок поиска (строка ввода + кнопка с эмодзи лупы) -->
+    <div class="search-container">
+        <input type="text" id="stop-search-input" placeholder="Введите название остановки...">
+        <button id="stop-search-btn">🔍</button>
+    </div>
+
+    <!-- Динамический скролл-список всех остановок города -->
+    <div id="all-stops-list" class="all-stops-list">
+        <!-- Сюда JS вставит строки остановок с кнопками 🕒 и 📍 -->
+    </div>
+    
+    <!-- Скрытый по умолчанию контейнер для вывода полного расписания (Вариант А) -->
+    <div id="full-schedule-container" class="full-schedule-container" style="display: none;">
+        <!-- Сюда JS отрендерит плитку расписания при клике на кнопку 🕒 -->
+    </div>
     </div>
 
 <!-- === ЭКРАН 4: ИНФОРМАЦИЯ === -->
@@ -100,8 +144,11 @@
         </div>
     </div>
 
+
+
      <!-- 2. Новый файл: база данных и вся магия с картой/маршрутами -->
     <script src="map-data.js"></script>
+    <script src="schedule.js"></script>
 
     <!-- 3. Главный скрипт: анимации, кнопки, клики и вибрация -->
     <script src="script.js"></script>

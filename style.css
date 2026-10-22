@@ -1,6 +1,6 @@
 @font-face {
   font-family: "font"; /* Имя, которое вы будете использовать в CSS */
-  src: url("Lato-Bold.ttf") format("ttf"), /*  Первый предпочтительный формат, затем запасные */
+  src: url("Lato-Bold.ttf") format("ttf"); /*  Первый предпочтительный формат, затем запасные */
   font-weight: normal; /*  Например, normal, bold, etc. */
   font-style: normal;  /*  Например, normal, italic, etc. */
 }
@@ -213,7 +213,7 @@ h1 {
 
 .line {
 	justify-self: center;
-	background-color: grey;
+	background-color: #3ba0ed;
 	height: 1px;
 	width: 90vw;
 }
@@ -221,22 +221,47 @@ h1 {
 .block-scedule-buses {
     display: flex;
     flex-direction: column;
-    
-    /* ДОБАВИЛИ: Намертво центрирует линии и строчки по горизонтали внутри белого блока */
     align-items: center; 
     
     width: 100%;
-    height: 180px; 
+    /* ЖЕСТКО ЗАФИКСИРОВАЛИ: Точно такая же высота 330px, как у блока автобуса! */
+    height: 330px; 
+    
     background-color: white;
     box-sizing: border-box;
+    
+    /* Добавили внутренние отступы, чтобы заголовок и плашки красиво дышали */
+    padding: 20px 15px; 
+}
+
+.scedule-stop-name {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.25rem; /* Крупный, читаемый размер */
+    color: #3ba0ed; 
+    margin-bottom: 20px; /* Отступ до первой плашки или заглушки */
+
+     /* ДОПИСАТЬ СЮДА: Выравниваем эмодзи, текст и лупу строго по одной линии */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* Это автоматически создаст одинаковый красивый отступ между всеми элементами */
 }
 
 
 /* Логика отображения страниц */
 .app-page {
-    display: none; /* Все страницы по умолчанию скрыты */
+    display: none;
     width: 100%;
-    flex-grow: 1; /* Страница занимает все место от рекламы до меню */
+    
+    /* ЖЕСТКО ЗАПИРАЕМ ЭКРАНЫ: Занимаем всю высоту от рекламы до меню баров */
+    height: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* Любые хвосты внутри страницы теперь не смогут растянуть её вниз */
+    
+    flex-grow: 1;
 }
 
 .app-page.active-page {
@@ -390,3 +415,411 @@ h1 {
 .bus-container.drive-away {
     transform: translateX(-150%);
 }
+
+.bus-route-note {
+    color: #e74c3c; /* Красивый сочный красный */
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-left: 10px; /* Фиксированный зазор от овальной плашки номера */
+    flex-grow: 1; /* Позволяет тексту занимать свободное место, аккуратно отодвигая минуты вправо */
+}
+
+
+/* ДОБАВИТЬ НИЖЕ: Жесткие размеры для иконок в заголовке */
+.scedule-search-icon {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* Подложка: строго от нижней границы рекламы до верхней границы меню */
+.bus-modal-overlay {
+    position: absolute; /* Привязываемся к родителю карты */
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.4); /* Затемнение */
+    z-index: 1000; /* Максимальный приоритет внутри карты — шторка точно уйдет под пелену */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+/* Класс, который JS будет вешать для показа плашки */
+.bus-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Главный контейнер большой карточки */
+.bus-modal-card {
+    display: flex;
+    flex-direction: column;
+    width: 220px; /* Крупный, заметный размер */
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    transform: scale(0.9);
+    transition: transform 0.2s ease;
+    overflow: hidden; 
+}
+
+.bus-modal-overlay.active .bus-modal-card {
+    transform: scale(1);
+}
+
+/* Верхний большой куб для номера автобуса */
+.bus-modal-top-cube {
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 6rem; /* Гигантская цифра, видно издалека */
+    font-weight: bold;
+    border-radius: 20px 20px 0 0;
+}
+
+/* Нижний блок для времени прибытия (по вашей схеме с рамкой) */
+.bus-modal-bottom-info {
+    height: 60px;
+    background-color: white;
+    border: 3px solid #000000; /* Жирная черная рамка по схеме */
+    border-top: none; /* Чтобы не двоилась линия на стыке с кубом */
+    border-radius: 0 0 20px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000000;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Контейнер строки поиска */
+.search-container {
+    display: flex;
+    width: 100%;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.search-container input {
+    flex-grow: 1;
+    height: 42px;
+    border: 2px solid #ffffff;
+    border-radius: 12px;
+    padding: 0 12px;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.search-container button {
+    width: 45px;
+    height: 42px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Динамический скролл-список всех остановок на Третьем экране */
+.all-stops-list {
+    width: 100%;
+    
+    /* МАГИЯ FLEXBOX: Забираем ровно столько места, сколько осталось под поиском */
+    flex-grow: 1;
+    height: 0;
+    min-height: 0;
+    
+    /* Включаем внутреннее скольжение плашек */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    padding: 5px 15px 20px 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Строка отдельной остановки в списке */
+.stop-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 12px 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.stop-item-name {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333333;
+    text-align: left;
+    padding-right: 10px;
+}
+
+/* Контейнер для двух кнопок справа */
+.stop-item-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.btn-action-schedule, .btn-action-map {
+    width: 38px;
+    height: 38px;
+    border: 2px solid #3ba0ed;
+    background-color: #ffffff;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Стили для Варианта А (Полное расписание плиткой) */
+.full-schedule-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #3ba0ed; /* В цвет фона приложения */
+    padding: 15px 15px 80px 15px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 5;
+}
+
+/* Кнопка "Назад" в расписании */
+.btn-schedule-back {
+    margin-bottom: 15px;
+    padding: 8px 15px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #3ba0ed;
+}
+
+/* Плитка маршрута */
+.schedule-route-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.schedule-route-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.schedule-time-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: #555555;
+    font-size: 1rem;
+}
+
+/* Кнопки действий по умолчанию скрыты и сжаты */
+.stop-item-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-width 0.25s ease, opacity 0.25s ease;
+}
+
+/* Когда строка становится активной — плавно раскрываем кнопки */
+.stop-list-item.active .stop-item-actions {
+    max-width: 100px; /* Достаточно для двух кнопок */
+    opacity: 1;
+}
+
+/* Легкое визуальное выделение активной строки */
+.stop-list-item.active {
+    background-color: #f0f8ff; /* Очень легкий голубой оттенок */
+    border-left: 4px solid #3ba0ed; /* Акцентная полоска слева */
+    padding-left: 11px; /* Чтобы компенсировать полоску */
+}
+
+/* Контейнер списка маршрутов под картой */
+.route-list-container {
+    flex-grow: 1;
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #ffffff;
+    overflow-y: auto;
+}
+
+/* Элемент списка маршрутов */
+.route-list-item {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    border: 2px solid transparent;
+}
+
+/* Подсветка активного первого маршрута */
+.route-list-item.active-route {
+    border-color: #18c20c;
+    background-color: #f0fdf4;
+}
+
+.route-list-item.disabled-route {
+    opacity: 0.6;
+}
+
+/* Круглые цветные плашки с номерами маршрутов */
+.route-badge-green, .route-badge-blue {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    margin-right: 15px;
+}
+
+.route-badge-green { background-color: #18c20c; }
+.route-badge-blue { background-color: #3ba0ed; }
+
+.route-item-info {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.route-item-title {
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: #333333;
+}
+
+.route-item-dir {
+    font-size: 0.85rem;
+    color: #666666;
+    margin-top: 2px;
+}
+
+/* 1. Сам Второй экран: жестко запираем в границах и включаем Flexbox */
+.js-page-route {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    display: none; /* Переключается через .active-page */
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Когда страница становится активной */
+.js-page-route.active-page {
+    display: flex;
+}
+
+/* 2. Новая карта Второго экрана: забирает ВСЁ свободное место на дисплее */
+.route-page-map {
+    width: 100%;
+    flex-grow: 1;
+    height: 0;
+    min-height: 0;
+    background-color: #e5e3df; /* Серый фон до загрузки тайлов карты */
+}
+
+/* 3. Фиксированный подвал для строго 3-х маршрутов */
+
+.route-list-container {
+    width: 100%;
+    height: 200px; /* Было 180px — добавили 20 пикселей под меню высотой 70px */
+    max-height: 200px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background-color: #ffffff;
+    flex-shrink: 0;
+    overflow: hidden; /* Всё поместится свободно без скроллов */
+}
+
+/* 4. Элемент списка маршрутов (плашка) */
+.route-list-item {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 6px 15px;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    border: 2px solid transparent;
+    opacity: 0.5; /* Делаем серыми и блеклыми все невыбранные маршруты */
+    transition: opacity 0.2s, border-color 0.2s, background-color 0.2s;
+    cursor: pointer;
+}
+
+/* Подсветка активного первого маршрута (зеленый) */
+.route-list-item.active-route {
+    border-color: #18c20c;
+    background-color: #f0fdf4;
+}
+
+/* Отключение для неактивных/будущих маршрутов */
+.route-list-item.active-route {
+    opacity: 1;
+}
+
+/* Индивидуальная подсветка для каждого маршрута при активности */
+.route-list-item.active-route[data-route="1"] {
+    border-color: #18c20c;
+    background-color: #f0fdf4; /* Легкий зеленый фон */
+}
+
+.route-list-item.active-route[data-route="2"] {
+    border-color: #3ba0ed;
+    background-color: #f0f9ff; /* Легкий синий фон */
+}
+
+.route-list-item.active-route[data-route="3"] {
+    border-color: #ed815c;
+    background-color: #fff7f5; /* Легкий красный фон */
+}
+
+/* Круглые плашки всегда цветные для преемственности */
+.route-badge-green { background-color: #18c20c; width: 36px; height: 36px; border-radius: 50%; color: white; font-weight: bold; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 15px; }
+.route-badge-blue  { background-color: #3ba0ed; width: 36px; height: 36px; border-radius: 50%; color: white; font-weight: bold; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 15px; }
+.route-badge-red   { background-color: #ed815c; width: 36px; height: 36px; border-radius: 50%; color: white; font-weight: bold; font-size: 1.1rem; display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-right: 15px; }
